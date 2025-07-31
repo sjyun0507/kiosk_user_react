@@ -1,13 +1,18 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+
+/*
+결제 성공페이지
+ */
 export function SuccessPage() {
     const navigate = useNavigate();
+    const [cartItems, setCartItems] = useState([]);
     const [searchParams] = useSearchParams();
+    const orderId = searchParams.get("orderId") || "";
 
+    //orderId, amount, paymentKey → URL 파라미터에서 가져옴
     useEffect(() => {
-        // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
-        // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
         const requestData = {
             orderId: searchParams.get("orderId"),
             amount: searchParams.get("amount"),
@@ -15,38 +20,82 @@ export function SuccessPage() {
         };
 
         async function confirm() {
-            const response = await fetch("/api/pay/confirm", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestData),
-            });
+            try {
+                const response = await fetch("http://localhost:8080/api/pay/confirm", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(requestData),
+                });
+                const json = await response.json();
 
-            const json = await response.json();
-
-            if (!response.ok) {
-                // 결제 실패 비즈니스 로직을 구현하세요.
-                navigate(`/fail?message=${json.message}&code=${json.code}`);
-                return;
+                // if (response.ok) {
+                //     localStorage.removeItem("cartItems");
+                // }
+                if (!response.ok) {
+                    navigate(`/fail?message=${encodeURIComponent(json.message)}&code=${json.code}`);
+                    return;
+                }
+            } catch (error) {
+                console.error("결제 확인 중 오류 발생:", error);
+                navigate(`/fail?message=${encodeURIComponent("서버 오류입니다.")}&code=SERVER_ERROR`);
             }
-
-            // 결제 성공 비즈니스 로직을 구현하세요.
         }
         confirm();
     }, []);
 
+    useEffect(() => {
+        const storedCart = localStorage.getItem("cartItems");
+        if (storedCart) {
+            try {
+                setCartItems(JSON.parse(storedCart));
+            } catch (e) {
+                console.error("Invalid cart data");
+            }
+        }
+    }, []);
+
+        //결제완료 후 메인으로 돌아가기
+       const handleBackToMain = () => {
+           localStorage.removeItem("cartItems");
+           navigate("/", { replace: true });
+       }
+
     return (
-        <div className="result wrapper">
-            <div className="box_section">
-                <h2>
-                    결제 성공
-                </h2>
-                <p>{`주문번호: ${searchParams.get("orderId")}`}</p>
-                <p>{`결제 금액: ${Number(
-                    searchParams.get("amount")
-                ).toLocaleString()}원`}</p>
-                <p>{`paymentKey: ${searchParams.get("paymentKey")}`}</p>
+        <div className="min-h-screen bg-neutral-100 flex items-center justify-center py-8 px-2">
+            <div className="w-full max-w-md p-8 font-sans receipt-container relative bg-white shadow-lg rounded-lg border border-gray-300">
+                <h2 className="text-3xl font-bold mb-8 border-b pb-4 text-gray-800 text-center">영수증</h2>
+                <div className="space-y-2 mb-8 text-sm text-gray-700">
+                    <p><strong>업체명 :</strong> BEANS COFFEE</p>
+                    <p><strong>주문일자 :</strong> {new Date().toLocaleString()}</p>
+                    <p><strong>주문번호 :</strong> {searchParams.get("orderId")}</p>
+                    <p><strong>결제키 :</strong> {searchParams.get("paymentKey")}</p>
+                    <p><strong>결제 금액 :</strong> {Number(searchParams.get("amount")).toLocaleString()}원</p>
+                </div>
+                <div className="mb-8">
+                    <h2 className="text-lg font-bold mb-3 text-gray-700 text-center border-b pb-2">주문 내역</h2>
+                    <ul className="border rounded-lg p-4 bg-gray-50 shadow-sm divide-y">
+                        {cartItems.length > 0 ? (
+                            cartItems.map((item, index) => (
+                                <li key={index} className="flex justify-between py-2 font-medium">
+                                    <span>{item.name} x {item.quantity}</span>
+                                    <span>{(item.price * item.quantity).toLocaleString()}원</span>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="text-gray-400 py-2">주문 항목이 없습니다.</li>
+                        )}
+                    </ul>
+                </div>
+                <div className="flex justify-center">
+                    <button
+                        onClick={handleBackToMain}
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-lg font-semibold transition duration-200"
+                    >
+                        메인화면으로 이동
+                    </button>
+                </div>
             </div>
         </div>
     );

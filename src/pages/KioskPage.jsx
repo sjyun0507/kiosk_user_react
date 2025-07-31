@@ -3,9 +3,12 @@ import Header from "../components/Header";
 import CategoryTab from "../components/CategoryTab";
 import MenuItem from "../components/MenuItem";
 import {useEffect, useState} from "react";
-import {useNavigate, useLocation} from "react-router-dom";
 import axios from "axios";
-
+/*
+키오스크 페이지(메인화면)
+1. 카테고리, 아이템 조회기능
+2. 장바구니 초기화: 메인화면에 들어오면 장바구니 비움
+ */
 
 const KioskPage = ({cartItems, setCartItems}) => {
     const [selectedCategory, setSelectedCategory] = useState("커피"); //카테고리 메인조회 기본값
@@ -20,17 +23,14 @@ const KioskPage = ({cartItems, setCartItems}) => {
     const [addPearl, setAddPearl] = useState("없음"); //펄
     const [sparkleLevel, setSparkleLevel] = useState("없음"); //탄산
     const isDessert = selectedProduct?.category.name?.includes("디저트") ?? false;
-    const navigate = useNavigate();
-    const location = useLocation();
     const [allMenuItems, setAllMenuItems] = useState([]);
     const [menuItems, setMenuItems] = useState([]);
 
+    //메뉴 가져오기
     useEffect(() => {
-        // console.log(`http://localhost:8080/api/menus?category=${encodeURIComponent(selectedCategory)}`)
         axios
             .get(`http://localhost:8080/api/menus/all`)
             .then((res) => {
-                // console.log("전체메뉴",res.data);
                 setAllMenuItems(res.data); // 서버에서 받은 메뉴 데이터 저장
             })
             .catch((err) => {
@@ -61,18 +61,23 @@ const KioskPage = ({cartItems, setCartItems}) => {
         }
     }, []);
 
-    //장바구니 담기
-    const handleAddToCart = (item) => {
-        setCartItems(prevItems => {
-            const updatedCart = [...prevItems, item];
-            localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-            return updatedCart;
-        });
-    };
+    //장바구니 초기화
+    useEffect(() => {
+        const storedItems = localStorage.getItem("cartItems");
+        if (!storedItems) {
+            setCartItems([]); // 장바구니 비움
+        }
+    }, []);
+
 
     return (
         // UI를 브라우저 전체 화면으로 설정
-        <div className="bg-yellow-500 w-screen h-screen p-6 mx-auto overflow-hidden">
+        <div className="bg-yellow-500 w-screen h-screen p-6 mx-auto overflow-y-auto">
+            <div
+                id="cart-scroll-container"
+                className="flex-1 rounded-lg p-4 overflow-y-auto"
+                style={{ maxHeight: '60vh', minHeight: '10rem', minWidth: 0 }}
+            >
             <Header/>
             <CategoryTab onCategoryChange={onCategoryChange}/>
             <div className="grid grid-cols-3 lg:grid-cols-6 gap-4 my-4">
@@ -82,161 +87,200 @@ const KioskPage = ({cartItems, setCartItems}) => {
                     //아이템의 key가 **유일(unique)**해야 한다. 식별가능한 고유 아이디 menuId로 사용
                 ))}
 
-
             </div>
             {selectedProduct && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
-                        {/* Product Image */}
-                        <img src={selectedProduct.imageUrl} alt={selectedProduct.name}
-                             className="w-60 h-40 object-contain mx-auto rounded mb-4"/>
-                        <h2 className="text-xl font-bold mb-2">{selectedProduct.name}</h2>
-                        <p className="mb-4 text-gray-600">{selectedProduct?.price ? selectedProduct.price.toLocaleString() + "원" : "가격 정보 없음"}
-                        </p>
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
+                    <div className="bg-white rounded-xl w-full max-w-md shadow-xl overflow-auto max-h-[90vh] p-6">
+                        <div className="flex justify-center items-center gap-4 mb-6">
+                          <img
+                            src={selectedProduct.imageUrl}
+                            alt={selectedProduct.name}
+                            className="w-24 h-24 object-contain rounded-md "
+                          />
+                          <div className="flex flex-col justify-center">
+                            <h2 className="text-lg font-medium text-gray-800 mb-1">{selectedProduct.name}</h2>
+                            <p className="text-sm text-amber-600 font-medium">
+                              {selectedProduct?.price ? selectedProduct.price.toLocaleString() + "원" : "가격 정보 없음"}
+                            </p>
+                          </div>
+                        </div>
 
                         {!isDessert && (
                             <>
                                 {/* 모든 메뉴에 사이즈 선택*/}
-
                                 <div className="mb-4">
-                                    <div className="mb-4 flex items-center gap-2">
-                                        <p className="font-semibold w-24">사이즈 선택</p>
-                                        <div className="flex gap-2 justify-center">
-                                            {["S", "L(+500)"].map((option) => (
-                                                <button
-                                                    key={option} value={sizeOption}
-                                                    onClick={() => setSizeOption(option)}
-                                                    className={`px-4 py-2 border rounded ${
-                                                        sizeOption === option ? "bg-amber-500 text-white" : "bg-white"
-                                                    }`}
-                                                >
-                                                    {option}
-                                                </button>
-                                            ))}
-                                        </div>
+                                    <p className="font-semibold mb-2">컵사이즈 선택<span className="text-red-600">(필수)</span></p>
+                                    <div className="flex gap-2 flex-wrap mt-2">
+                                        {["S", "L(+500)"].map((option) => (
+                                            <button
+                                                key={option}
+                                                value={sizeOption}
+                                                onClick={() => setSizeOption(option)}
+                                                className={`px-3 py-1.5 border rounded cursor-pointer ${
+                                                    sizeOption === option
+                                                        ? "bg-gray-700 text-white"
+                                                        : "bg-gray-200 text-gray-900"
+                                                }`}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
                                     </div>
+                                    <hr className="my-4 border-gray-300" />
                                 </div>
 
 
                                 {/* HOT/ICE 옵션은 에이드, 주스,스무디 카테고리에서는 숨김 */}
                                 {!selectedProduct.category.name?.includes("에이드") && !selectedProduct.category.name?.includes("주스") && !selectedProduct.category.name?.includes("스무디") && (
                                     <div className="mb-4">
-                                        <div className="mb-4 flex items-center gap-2">
-                                            <p className="font-semibold w-24">옵션 선택</p>
-                                            <div className="flex gap-2 justify-center">
-                                                {["HOT", "ICE"].map((option) => (
-                                                    <button
-                                                        key={option} value={tempOption}
-                                                        onClick={() => setTempOption(option)}
-                                                        className={`px-4 py-2 border rounded ${
-                                                            tempOption === option ? "bg-amber-500 text-white" : "bg-white"
-                                                        }`}
-                                                    >
-                                                        {option}
-                                                    </button>
-                                                ))}
-                                            </div>
+                                        <p className="font-semibold mb-2">온도 선택<span className="text-red-600">(필수)</span></p>
+                                        <div className="flex gap-2 flex-wrap mt-2">
+                                            {["HOT", "ICE"].map((option) => (
+                                                <button
+                                                    key={option}
+                                                    value={tempOption}
+                                                    onClick={() => setTempOption(option)}
+                                                    className={`px-3 py-1.5 border rounded cursor-pointer ${
+                                                        tempOption === option
+                                                            ? "bg-gray-700 text-white"
+                                                            : "bg-gray-200 text-gray-900"
+                                                    }`}
+                                                >
+                                                    {option}
+                                                </button>
+                                            ))}
                                         </div>
+                                        <hr className="my-4 border-gray-300" />
                                     </div>
                                 )}
 
                                 {/* 커피 옵션 */}
                                 {selectedProduct.category.name?.includes("커피") && (
                                     <>
-                                        <div className="mb-4 flex items-center gap-2">
-                                            <p className="font-semibold w-24">샷 추가(+500)</p>
-                                            <select
-                                                className="flex-1 border px-3 py-2 rounded"
-                                                value={extraShot}
-                                                onChange={(e) => setExtraShot(Number(e.target.value))}
-                                            >
-                                                {[0 ,1, 2, 3, 4, 5].map((count) => (
-                                                    <option key={count} value={count}>{count}샷</option>
+                                        {/* 샷 추가 */}
+                                        <div className="mb-4">
+                                            <p className="font-semibold mb-2">샷 추가(+500)</p>
+                                            <div className="flex gap-2 flex-wrap mt-2">
+                                                {[0, 1, 2, 3, 4, 5].map(count => (
+                                                    <button
+                                                        key={count}
+                                                        className={`px-3 py-2 border rounded cursor-pointer ${
+                                                            extraShot === count ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-900"
+                                                        }`}
+                                                        onClick={() => setExtraShot(count)}
+                                                    >
+                                                        {count}샷
+                                                    </button>
                                                 ))}
-                                            </select>
+                                            </div>
+                                            <hr className="my-4 border-gray-300" />
                                         </div>
-                                        <div className="mb-4 flex items-center gap-2">
-                                            <p className="font-semibold w-24">시럽 추가(+500)</p>
-                                            <select
-                                                className="flex-1 border px-3 py-2 rounded"
-                                                value={syrup}
-                                                onChange={(e) => setSyrup(e.target.value)}
-                                            >
-                                                <option value="">선택 안 함</option>
-                                                <option value="바닐라">바닐라 시럽</option>
-                                                <option value="초코">초코 시럽</option>
-                                                <option value="카라멜">카라멜 시럽</option>
-                                                <option value="돌체">돌체 시럽</option>
-                                                <option value="헤이즐넛">헤이즐넛 시럽</option>fl
-                                                <option value="연유">연유</option>
-                                            </select>
+                                        {/* 시럽 추가 */}
+                                        <div className="mb-4">
+                                            <p className="font-semibold mb-2">시럽 추가(+500)</p>
+                                            <div className="flex gap-2 flex-wrap mt-2 overflow-x-auto">
+                                                {["선택 안 함", "바닐라", "초코", "카라멜", "돌체", "헤이즐넛", "연유"].map(option => (
+                                                    <button
+                                                        key={option}
+                                                        className={`px-3 py-1.5 border rounded cursor-pointer whitespace-nowrap ${
+                                                            syrup === option ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-900"
+                                                        }`}
+                                                        onClick={() => setSyrup(option)}
+                                                    >
+                                                        {option}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <hr className="my-4 border-gray-300" />
                                         </div>
-                                        <div className="mb-4 flex items-center gap-2">
-                                            <p className="font-semibold w-24">토핑 추가(+500)</p>
-                                            <select
-                                                className="flex-1 border px-3 py-2 rounded"
-                                                value={topping}
-                                                onChange={(e) => setTopping(e.target.value)}
-                                            >
-                                                <option value="">선택 안 함</option>
-                                                <option value="Caramel">Caramel Drizzle</option>
-                                                <option value="Cinnamon">Cinnamon powder</option>
-                                                <option value="Cream">Whipped Cream</option>
-                                            </select>
+                                        {/* 토핑 추가 */}
+                                        <div className="mb-4">
+                                            <p className="font-semibold mb-2">토핑 추가(+500)</p>
+                                            <div className="flex gap-2 flex-wrap mt-2 overflow-x-auto">
+                                                {["선택 안 함", "Caramel", "Cinnamon", "Cream"].map(option => (
+                                                    <button
+                                                        key={option}
+                                                        className={`px-3 py-1.5 border rounded cursor-pointer whitespace-nowrap ${
+                                                            topping === option ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-900"
+                                                        }`}
+                                                        onClick={() => setTopping(option)}
+                                                    >
+                                                        {option}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <hr className="my-4 border-gray-300" />
                                         </div>
-
                                     </>
                                 )}
 
                                 {/* 버블티 옵션 */}
                                 {selectedProduct.category.name?.includes("버블티") && (
                                     <>
-                                    <div className="mb-4 flex items-center gap-2">
-                                        <p className="font-semibold w-24">펄 추가</p>
-                                        <select
-                                            className="flex-1 border px-3 py-2 rounded"
-                                            value={addPearl}
-                                            onChange={(e) => setAddPearl(e.target.value)}
-                                        >
-                                            <option value="없음">없음</option>
-                                            <option value="추가">추가(+500)</option>
-                                        </select>
-                                    </div>
-                                    <div className="mb-4 flex items-center gap-2">
-                                        <p className="font-semibold w-24">당도 선택</p>
-                                        <select
-                                            className="flex-1 border px-3 py-2 rounded"
-                                            value={sweetness}
-                                            onChange={(e) => setSweetness(e.target.value)}
-                                        >
-                                            <option value="기본">기본</option>
-                                            <option value="달게">달게</option>
-                                            <option value="조금만">조금만</option>
-                                        </select>
-                                    </div>
+                                        {/* 펄 추가 */}
+                                        <div className="mb-4">
+                                            <p className="font-semibold mb-2">펄 추가</p>
+                                            <div className="flex gap-2 flex-wrap mt-2">
+                                                {["없음", "추가"].map(option => (
+                                                    <button
+                                                        key={option}
+                                                        className={`px-3 py-1.5 border rounded cursor-pointer ${
+                                                            addPearl === option ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-900"
+                                                        }`}
+                                                        onClick={() => setAddPearl(option)}
+                                                    >
+                                                        {option}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <hr className="my-4 border-gray-300" />
+                                        </div>
+                                        {/* 당도 선택 */}
+                                        <div className="mb-4">
+                                            <p className="font-semibold mb-2">당도 선택</p>
+                                            <div className="flex gap-2 flex-wrap mt-2">
+                                                {["기본", "달게", "조금만"].map(option => (
+                                                    <button
+                                                        key={option}
+                                                        className={`px-3 py-1.5 border rounded cursor-pointer ${
+                                                            sweetness === option ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-900"
+                                                        }`}
+                                                        onClick={() => setSweetness(option)}
+                                                    >
+                                                        {option}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <hr className="my-4 border-gray-300" />
+                                        </div>
                                     </>
                                 )}
 
                                 {/* 에이드 옵션 */}
                                 {selectedProduct.category.name?.includes("에이드") && (
-                                    <div className="mb-4 flex items-center gap-2">
-                                        <p className="font-semibold w-24">탄산 조절</p>
-                                        <select
-                                            className="flex-1 border px-3 py-2 rounded"
-                                            value={sparkleLevel}
-                                            onChange={(e) => setSparkleLevel(e.target.value)}
-                                        >
-                                            <option value="보통">보통</option>
-                                            <option value="강하게">강하게</option>
-                                            <option value="약하게">약하게</option>
-                                        </select>
+                                    <div className="mb-4">
+                                        <p className="font-semibold mb-2">탄산 조절</p>
+                                        <div className="flex gap-2 flex-wrap mt-2">
+                                            {["보통", "강하게", "약하게"].map(option => (
+                                                <button
+                                                    key={option}
+                                                    className={`px-3 py-1.5 border rounded cursor-pointer ${
+                                                        sparkleLevel === option ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-900"
+                                                    }`}
+                                                    onClick={() => setSparkleLevel(option)}
+                                                >
+                                                    {option}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <hr className="my-4 border-gray-300" />
                                     </div>
                                 )}
                             </>
                         )}
 
                         <div className="flex flex-col gap-2">
-                            <div className="flex justify-center gap-2">
+                            <div className="flex justify-center gap-4 mt-6">
                                 <button
                                     onClick={() => {
                                         setSelectedProduct(null);
@@ -249,7 +293,7 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                         setAddPearl("없음");
                                         setSparkleLevel("없음");
                                     }}
-                                    className="px-4 py-2 border rounded"
+                                    className="px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
                                 >
                                     취소
                                 </button>
@@ -339,7 +383,7 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                         setAddPearl("없음");
                                         setSparkleLevel("없음");
                                     }}
-                                    className="px-4 py-2 bg-lime-700 text-white rounded"
+                                    className="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md hover:bg-lime-800transition"
                                 >
                                     장바구니 담기
                                 </button>
@@ -349,7 +393,9 @@ const KioskPage = ({cartItems, setCartItems}) => {
                 </div>
             )}
 
-            <CartPanel cartItems={cartItems} setCartItems={setCartItems}/>
+                <CartPanel cartItems={cartItems} setCartItems={setCartItems} noOuterPanel />
+
+        </div>
         </div>
     );
 };

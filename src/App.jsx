@@ -3,7 +3,6 @@ import {Routes, Route } from 'react-router-dom';
 import PaymentPage from './pages/PaymentPage';
 import CartPanel from "./components/CartPanel.jsx";
 import KioskPage from "./pages/KioskPage.jsx";
-
 import {SuccessPage} from "./pages/Success.jsx";
 import {FailPage} from "./pages/Fail.jsx";
 
@@ -22,8 +21,8 @@ function App() {
             <Route path="/" element={<KioskPage cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path="/cart" element={<CartPanel cartItems={cartItems} setCartItems={setCartItems} />} />
             <Route path="/payment" element={<PaymentPage />} />
-            <Route path="/pay/success" element={<SuccessPage/>} />
-            <Route path="/pay/fail" element={<FailPage/>} />
+            <Route path="/success" element={<SuccessPage/>} />
+            <Route path="/fail" element={<FailPage/>} />
         </Routes>
     );
 }
