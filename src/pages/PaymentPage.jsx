@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
+import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "lIUt5JCR8vA3XOlDluVSz";
@@ -29,6 +30,9 @@ const PaymentPage = () => {
   const [ready, setReady] = useState(false);
 
   // 폰 번호 바뀔 때 포인트 조회 (예시: 실제 API 있으면 호출)
+  /*
+  포인트 부분변경해야함
+   */
   useEffect(() => {
     if (phoneNumber.length === 11) {
       // 실제 포인트 API 있으면 호출 (예시는 고정값)
@@ -41,12 +45,9 @@ const PaymentPage = () => {
   // 결제 위젯 초기화
   useEffect(() => {
     async function loadWidgets() {
-      if (!window.loadPaymentWidget) {
-        console.error("토스 결제 위젯 로드 실패");
-        return;
-      }
-      const widget = await window.loadPaymentWidget(clientKey, customerKey);
-      setWidgets(widget);
+      const tossPayments = await loadTossPayments(clientKey);
+      const widgets = tossPayments.widgets({ customerKey });
+      setWidgets(widgets);
     }
     loadWidgets();
   }, []);
@@ -56,7 +57,7 @@ const PaymentPage = () => {
     async function render() {
       if (!widgets) return;
 
-      await widgets.setAmount(amount);
+      await widgets.setAmount({ currency: "KRW", value: amount.value });
 
       await Promise.all([
         widgets.renderPaymentMethods({
@@ -89,24 +90,30 @@ const PaymentPage = () => {
       alert("결제 수단이 준비되지 않았습니다.");
       return;
     }
+    if (phoneNumber.length !== 11) {
+      alert("결제를 진행하려면 휴대폰 번호를 정확히 입력하세요.");
+      return;
+    }
 
     // 휴대폰 번호는 선택 입력이므로 11자리일 경우에만 사용
-    const phoneOrNull = phoneNumber.length === 11 ? phoneNumber : null;
+    const phoneOrNull = phoneNumber.length === 11 ? phoneNumber : "";
 
     try {
       // 1. 주문 생성 API 호출
       const finalAmount = amount.value;
       const orderResponse = await axios.post("http://localhost:8080/api/order", {
-        phone: phoneOrNull, // null일 수도 있음
-        totalAmount: finalAmount,
-        usedPoint: usedPoints,
-        orderMethod: "kiosk",
+        phone: phoneOrNull,
+        totalAmount: finalAmount || 0,
+        usedPoint: usedPoints || 0,
+        orderMethod: "kiosk", // 서버에서 이 값이 허용되는지 확인
         orderTime: new Date().toISOString(),
-        orderStatus: "WAITING",
+        orderStatus: "waiting", // 서버 enum 값 확인 waiting?  WAITING?
       });
 
-      const orderIdFromServer = orderResponse.data.orderId;
+      const orderIdFromServer = orderResponse.data.orderId || uuidv4();
       setOrderId(orderIdFromServer);
+
+      await widgets.setAmount({ currency: "KRW", value: amount.value });
 
       // 2. 토스 결제 위젯 호출
       await widgets.requestPayment({
@@ -117,7 +124,7 @@ const PaymentPage = () => {
         customerEmail: "customer123@gmail.com", // 실제 이메일 적용 가능
         customerName: phoneOrNull || "비회원", // 비회원 기본명
         // 토스 위젯은 customerMobilePhone 필드가 필수일 수 있으므로 빈 문자열도 허용
-        customerMobilePhone: phoneOrNull || "",
+        customerMobilePhone: phoneOrNull,
       });
 
       setPaymentStatus("성공");
