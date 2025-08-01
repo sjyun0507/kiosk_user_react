@@ -245,7 +245,7 @@ const PaymentPage = () => {
           <button
             onClick={handlePayment}
             disabled={!ready}
-            className="w-1/2 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl shadow-md"
+            className="w-1/2 bg-blue-400 hover:bg-blue-500  text-white py-3 rounded-xl shadow-md"
           >
             결제하기
           </button>

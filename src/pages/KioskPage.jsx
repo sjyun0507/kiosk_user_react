@@ -109,7 +109,7 @@ const KioskPage = ({cartItems, setCartItems}) => {
                             <>
                                 {/* 모든 메뉴에 사이즈 선택*/}
                                 <div className="mb-4">
-                                    <p className="font-semibold mb-2">컵사이즈 선택<span className="text-red-600">(필수)</span></p>
+                                    <p className="font-medium  mb-2">컵사이즈 선택<span className="text-red-600 text-sm"> *필수</span></p>
                                     <div className="flex gap-2 flex-wrap mt-2">
                                         {["S", "L(+500)"].map((option) => (
                                             <button
@@ -133,7 +133,7 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                 {/* HOT/ICE 옵션은 에이드, 주스,스무디 카테고리에서는 숨김 */}
                                 {!selectedProduct.category.name?.includes("에이드") && !selectedProduct.category.name?.includes("주스") && !selectedProduct.category.name?.includes("스무디") && (
                                     <div className="mb-4">
-                                        <p className="font-semibold mb-2">온도 선택<span className="text-red-600">(필수)</span></p>
+                                        <p className="font-medium mb-2">온도 선택<span className="text-red-600 text-sm"> *필수</span></p>
                                         <div className="flex gap-2 flex-wrap mt-2">
                                             {["HOT", "ICE"].map((option) => (
                                                 <button
@@ -159,9 +159,9 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                     <>
                                         {/* 샷 추가 */}
                                         <div className="mb-4">
-                                            <p className="font-semibold mb-2">샷 추가(+500)</p>
+                                            <p className="font-medium  mb-2">샷 추가<span className="text-gray-700 text-sm"> (+500)</span></p>
                                             <div className="flex gap-2 flex-wrap mt-2">
-                                                {[0, 1, 2, 3, 4, 5].map(count => (
+                                                {[0, 1, 2, 3, 4].map(count => (
                                                     <button
                                                         key={count}
                                                         className={`px-3 py-2 border rounded cursor-pointer ${
@@ -177,9 +177,9 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                         </div>
                                         {/* 시럽 추가 */}
                                         <div className="mb-4">
-                                            <p className="font-semibold mb-2">시럽 추가(+500)</p>
+                                            <p className="font-medium  mb-2">시럽 추가<span className="text-gray-700 text-sm"> (+500)</span></p>
                                             <div className="flex gap-2 flex-wrap mt-2 overflow-x-auto">
-                                                {["선택 안 함", "바닐라", "초코", "카라멜", "돌체", "헤이즐넛", "연유"].map(option => (
+                                                {["선택안함", "바닐라", "카라멜", "헤이즐넛", "연유"].map(option => (
                                                     <button
                                                         key={option}
                                                         className={`px-3 py-1.5 border rounded cursor-pointer whitespace-nowrap ${
@@ -195,9 +195,9 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                         </div>
                                         {/* 토핑 추가 */}
                                         <div className="mb-4">
-                                            <p className="font-semibold mb-2">토핑 추가(+500)</p>
+                                            <p className="font-medium mb-2">토핑 추가<span className="text-gray-700 text-sm"> (+500)</span></p>
                                             <div className="flex gap-2 flex-wrap mt-2 overflow-x-auto">
-                                                {["선택 안 함", "Caramel", "Cinnamon", "Cream"].map(option => (
+                                                {["선택안함", "Caramel", "Cinnamon", "Cream"].map(option => (
                                                     <button
                                                         key={option}
                                                         className={`px-3 py-1.5 border rounded cursor-pointer whitespace-nowrap ${
@@ -383,7 +383,7 @@ const KioskPage = ({cartItems, setCartItems}) => {
                                         setAddPearl("없음");
                                         setSparkleLevel("없음");
                                     }}
-                                    className="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md hover:bg-lime-800transition"
+                                    className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md hover:bg-lime-800transition"
                                 >
                                     장바구니 담기
                                 </button>

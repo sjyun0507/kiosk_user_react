@@ -196,7 +196,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
                             장바구니 비우기
                         </button>
                         <button onClick={handleOrder}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded"
+                            className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded"
                         >
                             주문하기
                         </button>
@@ -207,9 +207,9 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
         </div>
         {showModal && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-              <div className="bg-white rounded-xl p-6 w-[50vw] h-[30vh] text-center shadow-xl flex flex-col justify-center">
-                <h2 className="text-lg font-bold mb-2">주문을 계속할까요?</h2>
-                <p className="text-sm text-gray-600 mb-4">
+              <div className="bg-white rounded-xl p-6 w-[40vw] h-[30vh] text-center shadow-xl flex flex-col justify-center">
+                <h2 className="text-xl font-bold mb-2">주문을 계속할까요?</h2>
+                <p className="text-l text-gray-600 mb-4">
                   {modalCountdown}초 뒤에 자동으로 주문이 종료돼요
                 </p>
                 <div className="flex justify-between gap-4">
@@ -228,7 +228,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
                     지금 끝내기
                   </button>
                   <button
-                      className="flex-1 bg-blue-500 text-white py-2 rounded"
+                      className="flex-1 bg-teal-600 hover:bg-teal-700  text-white py-2 rounded"
                     onClick={() => {
                       setShowModal(false);
                       setTimeLeft(120);
