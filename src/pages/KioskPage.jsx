@@ -26,7 +26,7 @@ const KioskPage = ({cartItems, setCartItems}) => {
     const [allMenuItems, setAllMenuItems] = useState([]);
     const [menuItems, setMenuItems] = useState([]);
 
-    //메뉴 가져오기
+    //모든 메뉴 가져오기
     useEffect(() => {
         axios
             .get(`http://localhost:8080/api/menus/all`)
@@ -41,14 +41,44 @@ const KioskPage = ({cartItems, setCartItems}) => {
     // 카테고리 변경 함수
     const onCategoryChange = (categoryName) => {
         setSelectedCategory(categoryName);
-        // 필요 시, 카테고리에 맞는 메뉴를 필터링해서 setMenuItems 하거나 useEffect로 처리
     };
 
-    //filter 에 따라 카테고리 별로 메뉴 불러오기
+
+    const toValidDate = (rawDate) => {
+        if (!rawDate) return null;
+        const isoFormat = rawDate.replace(" ", "T"); // "2025-08-01T11:17:06.000000"
+        return new Date(isoFormat);
+    };
+
+
+    //filter 에 따라 카테고리 별로 메뉴 불러오기 (신메뉴: 최근 한달 이내 생성된 메뉴)
     useEffect(() => {
-        const filtered = allMenuItems.filter(item =>
-            item.category?.name === selectedCategory
-        );
+        const isNewMenu = (createdAt) => {
+            const createdDate = toValidDate(createdAt);
+            if (!createdDate || isNaN(createdDate.getTime())) return false;
+
+            const now = new Date();
+            const diffInDays = (now - createdDate) / (1000 * 60 * 60 * 24);
+            return diffInDays <= 30;
+        };
+
+        const filtered = allMenuItems.filter(item => {
+            const categoryName = item.category?.name || "";
+            const createdAt = item.createdAt || item.created_at
+            // const createdAt = item.createdAt || item.createdDate || new Date().toISOString(); //테스트용
+
+            if (selectedCategory === "신메뉴" ) {
+                const isNew = isNewMenu(createdAt);
+                console.log("메뉴명:", item.name);
+                console.log("createdAt 원본:", createdAt);
+                console.log("신메뉴 여부:", isNew);
+
+                return isNew;
+            }
+
+            return categoryName === selectedCategory;
+        });
+
         setMenuItems(filtered);
     }, [selectedCategory, allMenuItems]);
 
@@ -82,10 +112,27 @@ const KioskPage = ({cartItems, setCartItems}) => {
             <CategoryTab onCategoryChange={onCategoryChange}/>
             <div className="grid grid-cols-3 lg:grid-cols-6 gap-4 my-4">
                 {/*카테고리별 필터링 적용*/}
-                {menuItems.map((item) => (
-                    <MenuItem key={item.menuId} item={item} onClick={() => setSelectedProduct(item)}/>
+                {menuItems.map((item) => {
+                    const createdAt = item.createdAt || item.created_at;
+                    const isNew = (() => {
+                      if (!createdAt) return false;
+                      const createdDate = new Date(createdAt.replace(" ", "T"));
+                      const now = new Date();
+                      const diffInDays = (now - createdDate) / (1000 * 60 * 60 * 24);
+                      return diffInDays <= 30;
+                    })();
+                    return (
+                      <div key={item.menuId} className="relative">
+                        {isNew && (
+                          <span className="absolute top-1 right-1 bg-teal-600 text-white text-xs font-bold px-2 py-0.5 rounded-full ">
+                            New
+                          </span>
+                        )}
+                        <MenuItem item={item} onClick={() => setSelectedProduct(item)} />
+                      </div>
+                    );
                     //아이템의 key가 **유일(unique)**해야 한다. 식별가능한 고유 아이디 menuId로 사용
-                ))}
+                })}
 
             </div>
             {selectedProduct && (

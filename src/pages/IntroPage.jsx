@@ -10,12 +10,9 @@ const IntroPage = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-white px-4">
-            {/* 인트로 비디오 (배너) */}
-            <video
-                src="/intro/banner_video.mp4"
-                autoPlay
-                muted
-                loop
+            <img
+                src="/intro/banner_logo.jpg"
+                alt="인트로 배너"
                 className="w-full aspect-video sm:h-[80vh] object-cover rounded-none shadow-none mb-4"
             />
             <h3 className="text-m font-semibold mb-4">포장은 일회용 용기에 매장에서는 머그잔으로 제공됩니다</h3>

@@ -1,28 +1,26 @@
-// const categories = ['신메뉴', '커피', '라떼', '버블티', '스무디', '에이드', '주스', '티', '디저트'];
-
 import {useEffect, useState} from "react";
 import axios from "axios";
 
 const CategoryTab = ({ onCategoryChange }) => {
     const [categories, setCategories] = useState([]);
 
+    //카테고리 가져오기
     useEffect(() => {
         axios.get("http://localhost:8080/api/menus/")
             .then((res) => {
-                // console.log("받은 메뉴 데이터:", res.data);
-                // 필요한 구조로 가공
                 const uniqueCategories = Array.from(
                     new Map(res.data.map((item) => [item.categoryId, {
                         id: item.categoryId,
-                        name: item.name
+                        name: item.name, //카테고리 이름 가져오기
                     }])).values()
                 );
                 setCategories(uniqueCategories);
             })
             .catch((err) => {
-                console.error("메뉴 가져오기 실패:", err);
+                console.error("카테고리 가져오기 실패:", err);
             });
     }, []);
+
 
     return (
         <div className="flex flex-wrap justify-center gap-3 mt-6 px-4">

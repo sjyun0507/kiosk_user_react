@@ -197,7 +197,7 @@ const PaymentPage = () => {
                 type="tel"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="휴대폰 번호를 입력하세요 예)01012345678"
+                placeholder="휴대폰 번호를 입력하세요"
                 className="flex-1 px-4 py-2 border rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-500"
                 maxLength={11}
               />
@@ -209,7 +209,7 @@ const PaymentPage = () => {
                   }}
                   className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold"
               >
-                조회
+                입력
               </button>
             </div>
 
@@ -245,7 +245,7 @@ const PaymentPage = () => {
           <button
             onClick={handlePayment}
             disabled={!ready}
-            className="w-1/2 bg-blue-400 hover:bg-blue-500  text-white py-3 rounded-xl shadow-md"
+            className="w-1/2 bg-teal-600 hover:bg-teal-700   text-white py-3 rounded-xl shadow-md"
           >
             결제하기
           </button>

@@ -207,7 +207,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
         </div>
         {showModal && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-              <div className="bg-white rounded-xl p-6 w-[40vw] h-[30vh] text-center shadow-xl flex flex-col justify-center">
+              <div className="bg-white rounded-xl p-6 w-[35vw] h-[30vh] text-center shadow-xl flex flex-col justify-center">
                 <h2 className="text-xl font-bold mb-2">주문을 계속할까요?</h2>
                 <p className="text-l text-gray-600 mb-4">
                   {modalCountdown}초 뒤에 자동으로 주문이 종료돼요
