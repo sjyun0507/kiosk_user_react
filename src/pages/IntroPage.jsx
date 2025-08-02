@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const IntroPage = () => {
+    // 페이지 진입 시 장바구니 무조건 초기화
+    useEffect(() => {
+        localStorage.removeItem("cartItems");
+    }, []);
+
     const navigate = useNavigate();
 
     const handleClick = (type) => {
@@ -13,7 +18,9 @@ const IntroPage = () => {
             <img
                 src="/intro/banner_logo.jpg"
                 alt="인트로 배너"
-                className="w-full aspect-video sm:h-[80vh] object-cover rounded-none shadow-none mb-4"
+                // className="w-full aspect-video sm:h-[70vh] object-cover rounded-none shadow-none mb-4"
+                // className="w-full h-auto max-w-none object-cover"
+                className="w-full max-w-5xl h-auto object-contain mb-4"
             />
             <h3 className="text-m font-semibold mb-4">포장은 일회용 용기에 매장에서는 머그잔으로 제공됩니다</h3>
             {/* 선택 버튼 영역 */}

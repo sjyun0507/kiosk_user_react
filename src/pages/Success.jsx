@@ -69,8 +69,7 @@ export function SuccessPage() {
                 <div className="space-y-2 mb-8 text-sm text-gray-700">
                     <p><strong>업체명 :</strong> BEANS COFFEE</p>
                     <p><strong>주문일자 :</strong> {new Date().toLocaleString()}</p>
-                    <p><strong>주문번호 :</strong> {searchParams.get("orderId")}</p>
-                    <p><strong>결제키 :</strong> {searchParams.get("paymentKey")}</p>
+                    <p><strong>주문번호 :</strong> {orderId}</p>
                     <p><strong>결제 금액 :</strong> {Number(searchParams.get("amount")).toLocaleString()}원</p>
                 </div>
                 <div className="mb-8">

@@ -1,11 +1,16 @@
-const MenuItemCard = ({item, onClick}) => {
+const MenuItemCard = ({item, isNew, onClick}) => {
     if (!item) return null; // item 자체가 null이면 아예 렌더링 안 함
 
     return (
         <div
             onClick={onClick}
-            className={`bg-white rounded-xl p-2 shadow-md text-center cursor-pointer ${item.soldOut ? 'opacity-50' : ''}`}
+            className={`relative bg-white rounded-xl p-2 shadow-md text-center cursor-pointer ${item.soldOut ? 'opacity-50' : ''}`}
         >
+            {isNew && (
+                <span className="absolute top-1 right-1 bg-gradient-to-r from-pink-500 to-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10 shadow-lg tracking-wide">
+                    NEW
+                </span>
+            )}
             <div className="h-32 bg-gray-200 mb-2 flex items-center justify-center overflow-hidden">
                 {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.name} className="h-full object-cover"/>
