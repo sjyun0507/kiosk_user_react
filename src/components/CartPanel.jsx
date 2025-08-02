@@ -22,9 +22,19 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
     //장바구니 수량 변경
     const handleQuantityChange = (id, newQuantity) => {
         if (newQuantity < 1) {
-            setCartItems(prev => prev.filter(item => item.id !== id)); // 수량 0이면 삭제
+            const deletedItem = cartItems.find(item => item.id === id);
+            console.log("삭제될 아이템:", deletedItem); // 콘솔 출력
+
+            setCartItems(prev => prev.filter(item => item.id !== id)); // 실제 삭제
+
+            // 백엔드 삭제 요청
+            axios.delete(`http://localhost:8080/api/cart/remove/${id}`)
+                .then(() => console.log("서버에서 삭제 완료"))
+                .catch(err => console.error("삭제 실패:", err));
+
             return;
         }
+
         setCartItems(prev =>
             prev.map(item =>
                 item.id === id ? { ...item, quantity: newQuantity } : item

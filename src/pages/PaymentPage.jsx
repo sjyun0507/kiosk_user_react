@@ -38,7 +38,7 @@ const PaymentPage = () => {
     const fetchPoints = async () => {
       if (phoneNumber.length === 11) {
         try {
-          const response = await axios.get(`http://localhost:8080/api/user/points?phone=${phoneNumber}`);
+          const response = await axios.get(`http://localhost:8080/api/order/points?phone=${phoneNumber}`);
           setAvailablePoints(response.data.points);
         } catch (error) {
           console.error("포인트 자동 조회 실패:", error);
@@ -121,7 +121,7 @@ const PaymentPage = () => {
       //로컬스토리지에 저장
       localStorage.setItem("cartItems", JSON.stringify(cart));
 
-      const orderResponse = await axios.post("http://localhost:8080/api/order", {
+      const orderResponse = await axios.post("http://localhost:8080/api/order/", {
         phone: phoneOrNull,
         totalAmount: finalAmount || 0,
         usedPoint: usedPoints || 0,
@@ -314,7 +314,7 @@ const PaymentPage = () => {
       onClick={async () => {
         if (phoneNumber.length === 11) {
           try {
-            const response = await axios.get(`http://localhost:8080/api/user/points?phone=${phoneNumber}`);
+            const response = await axios.get(`http://localhost:8080/api/order/points?phone=${phoneNumber}`);
             setAvailablePoints(response.data.points);
             setShowNumberPad(false);
           } catch (error) {

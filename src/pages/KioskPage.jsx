@@ -284,6 +284,7 @@ const KioskPage = ({ cartItems, setCartItems }) => {
 
                                         const newItem = {
                                             id: `${selectedProduct.menuId}-${Date.now()}`,
+                                            itemId: `${selectedProduct.menuId}-${Date.now()}`,
                                             menuId: selectedProduct.menuId,
                                             name: selectedProduct.name,
                                             price: finalPrice,
@@ -314,7 +315,7 @@ const KioskPage = ({ cartItems, setCartItems }) => {
 
                                         setCartItems(prev => [...prev, newItem]);
 
-                                        axios.post("http://localhost:8080/api/cart/", newItem)
+                                        axios.post("http://localhost:8080/api/cart/add", newItem)
                                             .then(() => console.log("장바구니 서버 저장 완료"))
                                             .catch(err => console.error("서버 저장 오류:", err));
 

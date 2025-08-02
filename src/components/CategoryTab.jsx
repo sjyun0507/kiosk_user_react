@@ -6,7 +6,7 @@ const CategoryTab = ({ onCategoryChange }) => {
 
     //카테고리 가져오기
     useEffect(() => {
-        axios.get("http://localhost:8080/api/menus/")
+        axios.get("http://localhost:8080/api/menus/category")
             .then((res) => {
                 const uniqueCategories = Array.from(
                     new Map(res.data.map((item) => [item.categoryId, {
