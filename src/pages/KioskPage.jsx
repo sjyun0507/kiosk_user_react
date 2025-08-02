@@ -302,7 +302,12 @@ const KioskPage = ({ cartItems, setCartItems }) => {
                                                         ? [{ name: "당도 조절", value: sweetness }]
                                                         : []
                                                 ),
-                                                ...(sparkleLevel ? [{ name: "탄산 조절", value: sparkleLevel }] : []),
+                                                ...(selectedProduct &&
+                                                    selectedProduct.category.name?.includes("에이드") &&
+                                                    sparkleLevel
+                                                        ? [{ name: "탄산 조절", value: sparkleLevel }]
+                                                        : []
+                                                ),
                                             ],
                                             sessionId: sessionStorage.getItem("sessionId"),
                                         };

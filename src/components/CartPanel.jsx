@@ -123,6 +123,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
                             opt.value === "" ||
                             opt.value === "선택 안 함" ||
                             opt.value === "없음" ||
+                            opt.value === "보통" ||
                             opt.value === "기본" ||
                             opt.value === 0
                           )
