@@ -93,7 +93,11 @@ export function SuccessPage() {
                         )}
                     </ul>
                 </div>
-                {/*<p><strong>주문번호 :</strong> {dbOrderId ? dbOrderId : "로딩 중..."}</p>*/}
+
+                <p style={{ textAlign: "center", marginBottom: "1rem" }}>
+                    <strong>주문번호 :</strong> {dbOrderId ? dbOrderId : "로딩 중..."}
+                </p>
+                
                 <div className="flex justify-center">
                     <button
                         onClick={handleBackToMain}
