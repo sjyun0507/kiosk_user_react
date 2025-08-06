@@ -8,6 +8,7 @@ export function SuccessPage() {
     const [cartItems, setCartItems] = useState([]);
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get("orderId") || "";
+    const [countdown, setCountdown] = useState(10);
 
     const [dbOrderId, setDbOrderId] = useState(null);  // 새로 저장할 DB의 order_id
 
@@ -62,6 +63,21 @@ export function SuccessPage() {
         }
     }, []);
 
+    // countdown 타이머: 1초마다 감소, 0되면 이동
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    localStorage.removeItem("cartItems");
+                    navigate("/", { replace: true });
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
         //결제완료 후 메인으로 돌아가기
        const handleBackToMain = () => {
            localStorage.removeItem("cartItems");
@@ -74,8 +90,8 @@ export function SuccessPage() {
                 <h2 className="text-3xl font-bold mb-8 border-b pb-4 text-gray-800 text-center">영수증</h2>
                 <div className="space-y-2 mb-8 text-sm text-gray-700">
                     <p><strong>업체명 :</strong> BEANS COFFEE</p>
-                    <p><strong>주문일자 :</strong> {new Date().toLocaleString()}</p>
-                    <p><strong>결제번호 :</strong> {orderId}</p>
+                    <p><strong>주문 일자 :</strong> {new Date().toLocaleString()}</p>
+                    <p><strong>결제 번호 :</strong> {orderId}</p>
                     <p><strong>결제 금액 :</strong> {Number(searchParams.get("amount")).toLocaleString()}원</p>
                 </div>
                 <div className="mb-8">
@@ -96,6 +112,9 @@ export function SuccessPage() {
 
                 <p style={{ textAlign: "center", marginBottom: "1rem" }}>
                     <strong>주문번호 :</strong> {dbOrderId ? dbOrderId : "로딩 중..."}
+                </p>
+                <p className="text-center text-sm text-gray-500 mb-4">
+                    {countdown}초 후 메인화면으로 자동 이동합니다.
                 </p>
                 
                 <div className="flex justify-center">
