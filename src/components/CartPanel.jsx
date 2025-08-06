@@ -40,6 +40,12 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
                 item.id === id ? { ...item, quantity: newQuantity } : item
             )
         );
+        // 백엔드 수량 업데이트 요청
+        axios.post(`http://localhost:8080/api/cart/update/${id}`, {
+            quantity: newQuantity,
+        })
+            .then(() => console.log("수량 업데이트 완료"))
+            .catch(err => console.error("수량 업데이트 실패:", err));
     };
 
     //장바구니에 아이템이 변경될 때마다 local storage에 저장됨
