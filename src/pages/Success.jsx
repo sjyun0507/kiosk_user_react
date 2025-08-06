@@ -38,7 +38,11 @@ export function SuccessPage() {
                 const json = await response.json();
 
                 if (!response.ok) {
-                    navigate(`/fail?message=${encodeURIComponent(json.message)}&code=${json.code}`);
+                    if (json && json.message && json.code) {
+                        navigate(`/fail?message=${encodeURIComponent(json.message)}&code=${json.code}`);
+                    } else {
+                        navigate(`/fail?message=${encodeURIComponent("알 수 없는 오류입니다.")}&code=UNKNOWN_ERROR`);
+                    }
                     return;
                 }
                 // DB에서 생성된 order_id 저장
@@ -68,16 +72,15 @@ export function SuccessPage() {
         const interval = setInterval(() => {
             setCountdown((prev) => {
                 if (prev <= 1) {
-                    clearInterval(interval);
                     localStorage.removeItem("cartItems");
                     navigate("/", { replace: true });
+                    return 0;
                 }
                 return prev - 1;
             });
         }, 1000);
         return () => clearInterval(interval);
     }, []);
-
         //결제완료 후 메인으로 돌아가기
        const handleBackToMain = () => {
            localStorage.removeItem("cartItems");

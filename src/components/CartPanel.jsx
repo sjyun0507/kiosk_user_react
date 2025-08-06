@@ -20,26 +20,39 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
     const sessionId = sessionStorage.getItem("sessionId");
 
     //장바구니 수량 변경
-    const handleQuantityChange = (id, newQuantity) => {
+    const handleQuantityChange = async (id, newQuantity) => {
         if (newQuantity < 1) {
             const deletedItem = cartItems.find(item => item.id === id);
-            console.log("삭제될 아이템:", deletedItem); // 콘솔 출력
-
-            setCartItems(prev => prev.filter(item => item.id !== id)); // 실제 삭제
-
-            // 백엔드 삭제 요청
-            axios.delete(`http://localhost:8080/api/cart/remove/${id}`)
-                .then(() => console.log("서버에서 삭제 완료"))
-                .catch(err => console.error("삭제 실패:", err));
-
+            setCartItems(prev => prev.filter(item => item.id !== id));
+            await axios.delete(`http://localhost:8080/api/cart/remove/${id}`);
             return;
         }
 
-        setCartItems(prev =>
-            prev.map(item =>
-                item.id === id ? { ...item, quantity: newQuantity } : item
-            )
-        );
+        const updatedItem = cartItems.find(item => item.id === id);
+        if (!updatedItem) return;
+
+        try {
+            const response = await axios.get(`http://localhost:8080/api/menus/${updatedItem.menuId}/stock`);
+            const currentStock = response.data.stock;
+
+            if (newQuantity > currentStock) {
+                alert(`재고 부족: 현재 최대 ${currentStock}개까지 가능합니다.`);
+                return;
+            }
+
+            setCartItems(prev =>
+                prev.map(item =>
+                    item.id === id ? { ...item, quantity: newQuantity } : item
+                )
+            );
+            await axios.post(`http://localhost:8080/api/cart/update/${id}`, {
+                quantity: newQuantity
+            });
+
+        } catch (error) {
+            console.error("재고 조회 실패:", error);
+            alert("재고 정보를 가져올 수 없습니다.");
+        }
     };
 
     //장바구니에 아이템이 변경될 때마다 local storage에 저장됨
@@ -63,38 +76,38 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
         });
     };
 
-    //타이머 설정
+    // 타이머: 2분 종료 시 모달 표시
     useEffect(() => {
-        if (timeLeft <= 0) {
+        if (timeLeft <= 0 && !showModal) {
             setShowModal(true);
             setModalCountdown(6);
-
-            const countdownInterval = setInterval(() => {
-                setModalCountdown(prev => {
-                    if (prev <= 1) {
-                        clearInterval(countdownInterval);
-                        setShowModal(false);
-                        setCartItems([]);
-                        localStorage.removeItem("cartItems");
-                        sessionStorage.removeItem("sessionId");
-                        if (setSelectedProduct) setSelectedProduct(null);
-                        setTimeLeft(120);
-                        navigate("/");
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-
-            return () => clearInterval(countdownInterval);
         }
+        if (timeLeft > 0) {
+            const timerId = setInterval(() => {
+                setTimeLeft(prev => prev - 1);
+            }, 1000);
+            return () => clearInterval(timerId);
+        }
+    }, [timeLeft, showModal]);
 
-        const timerId = setInterval(() => {
-            setTimeLeft(prev => prev - 1);
+    // 모달 카운트다운 관리
+    useEffect(() => {
+        if (!showModal) return;
+        if (modalCountdown <= 0) {
+            setShowModal(false);
+            setCartItems([]);
+            localStorage.removeItem("cartItems");
+            sessionStorage.removeItem("sessionId");
+            if (setSelectedProduct) setSelectedProduct(null);
+            setTimeLeft(120);
+            navigate("/");
+            return;
+        }
+        const countdownInterval = setInterval(() => {
+            setModalCountdown(prev => prev - 1);
         }, 1000);
-
-        return () => clearInterval(timerId);
-    }, [timeLeft]);
+        return () => clearInterval(countdownInterval);
+    }, [showModal, modalCountdown, setCartItems, setSelectedProduct, navigate]);
 
 
     // 시간 표시 mm:ss 포맷 변환
