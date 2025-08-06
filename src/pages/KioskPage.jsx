@@ -280,6 +280,16 @@ const KioskPage = ({ cartItems, setCartItems }) => {
                                             return;
                                         }
 
+                                        // 재고 확인
+                                        const sameItemCount = cartItems
+                                            .filter(item => item.menuId === selectedProduct.menuId)
+                                            .reduce((acc, cur) => acc + cur.quantity, 0);
+
+                                        if (sameItemCount >= selectedProduct.stock) {
+                                            alert("재고 부족으로 더 이상 담을 수 없습니다.");
+                                            return;
+                                        }
+
                                         let finalPrice = selectedProduct.price;
 
                                         finalPrice += getPrice("SIZE", sizeOption);
