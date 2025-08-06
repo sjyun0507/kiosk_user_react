@@ -79,10 +79,17 @@ const PaymentPage = () => {
           variantKey: "AGREEMENT",
         }),
       ]);
+
       setReady(true);
     }
     render();
-  }, [widgets, amount]);
+  }, [widgets]);
+
+  //금액이 변경되면 실행
+  useEffect(() => {
+    if (!widgets) return;
+    widgets.setAmount({ currency: "KRW", value: amount.value });
+  }, [amount,widgets]);
 
   // 포인트 사용 변경 시 금액 업데이트
   useEffect(() => {
