@@ -34,9 +34,14 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/menus/${updatedItem.menuId}/stock`);
             const currentStock = response.data.stock;
+            const sameMenuTotalQuantity = cartItems
+                .filter(item => item.menuId === updatedItem.menuId && item.id !== id)
+                .reduce((sum, item) => sum + item.quantity, 0);
 
-            if (newQuantity > currentStock) {
-                alert(`재고 부족: 현재 최대 ${currentStock}개까지 가능합니다.`);
+            const newTotalQuantity = sameMenuTotalQuantity + newQuantity;
+
+            if (newTotalQuantity > currentStock) {
+                alert(`재고 부족: 현재 ${updatedItem.name}는 총 ${currentStock}개까지 주문 가능합니다.\n`);
                 return;
             }
 
