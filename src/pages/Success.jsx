@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import api from "/src/api/axiosInstance";
 
 /* 결제 성공페이지 */
 
@@ -28,29 +29,14 @@ export function SuccessPage() {
 
         async function confirmPayment() {
             try {
-                const response = await fetch("http://localhost:8080/api/pay/confirm", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(requestData),
-                });
-                const json = await response.json();
-
-                if (!response.ok) {
-                    if (json && json.message && json.code) {
-                        navigate(`/fail?message=${encodeURIComponent(json.message)}&code=${json.code}`);
-                    } else {
-                        navigate(`/fail?message=${encodeURIComponent("알 수 없는 오류입니다.")}&code=UNKNOWN_ERROR`);
-                    }
-                    return;
-                }
+                const { data } = await api.post(`/pay/confirm`, requestData);
                 // DB에서 생성된 order_id 저장
-                setDbOrderId(json.orderId);
-
+                setDbOrderId(data.orderId);
             } catch (error) {
+                const msg = error?.response?.data?.message || "서버 오류입니다.";
+                const code = error?.response?.data?.code || "SERVER_ERROR";
                 console.error("결제 확인 중 오류 발생:", error);
-                navigate(`/fail?message=${encodeURIComponent("서버 오류입니다.")}&code=SERVER_ERROR`);
+                navigate(`/fail?message=${encodeURIComponent(msg)}&code=${code}`);
             }
         }
         confirmPayment();

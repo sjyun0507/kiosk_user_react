@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
-import axios from "axios";
-import { v4 as uuidv4 } from 'uuid';
+import { useLocation, useNavigate } from "react-router-dom";
+import api from "/src/api/axiosInstance";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 
 /*
 결제 페이지
 1. 주문내역 조회
-2. 휴대폰 번호를 이용한 포인트 조회
+2. 사용자 정보로 포인트 조회
 3. 토스 결제
  */
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
@@ -38,8 +37,8 @@ const PaymentPage = () => {
     const fetchPoints = async () => {
       if (phoneNumber.length === 11) {
         try {
-          const response = await axios.get(`http://localhost:8080/api/order/points?phone=${phoneNumber}`);
-          setAvailablePoints(response.data.points);
+          const { data } = await api.get(`/order/points`, { params: { phone: phoneNumber } });
+          setAvailablePoints(data.points);
         } catch (error) {
           console.error("포인트 자동 조회 실패:", error);
           setAvailablePoints(0);
@@ -128,7 +127,7 @@ const PaymentPage = () => {
       //로컬스토리지에 저장
       localStorage.setItem("cartItems", JSON.stringify(cart));
 
-      const orderResponse = await axios.post("http://localhost:8080/api/order/", {
+      const orderResponse = await api.post(`/order/`, {
         phone: phoneOrNull,
         totalAmount: finalAmount || 0,
         usedPoint: usedPoints || 0,
@@ -138,7 +137,7 @@ const PaymentPage = () => {
         earnedPoint: finalAmount * 0.05,
       });
 
-      const orderIdFromServer = orderResponse.data.orderId || uuidv4();
+      const orderIdFromServer = orderResponse.data.orderId || crypto.randomUUID();
       setOrderId(orderIdFromServer);
 
       await widgets.setAmount({ currency: "KRW", value: amount.value });
@@ -321,8 +320,8 @@ const PaymentPage = () => {
       onClick={async () => {
         if (phoneNumber.length === 11) {
           try {
-            const response = await axios.get(`http://localhost:8080/api/order/points?phone=${phoneNumber}`);
-            setAvailablePoints(response.data.points);
+            const { data } = await api.get(`/order/points`, { params: { phone: phoneNumber } });
+            setAvailablePoints(data.points);
             setShowNumberPad(false);
           } catch (error) {
             alert("포인트 조회에 실패했습니다.");

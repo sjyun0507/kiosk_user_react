@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import CategoryTab from "../components/CategoryTab";
 import MenuItem from "../components/MenuItem";
 import {useEffect, useState} from "react";
-import axios from "axios";
+import api from "/src/api/axiosInstance";
 /*
 키오스크 페이지(메인화면)
 1. 카테고리, 아이템 조회기능
@@ -32,8 +32,8 @@ const KioskPage = ({ cartItems, setCartItems }) => {
 
     // 서버에서 메뉴와 옵션 데이터 받아오기
     useEffect(() => {
-        axios
-            .get("http://localhost:8080/api/menus/all")
+        api
+            .get(`/menus/all`)
             .then((res) => {
                 setAllMenuItems(res.data.menus);
                 setAllOptionsRaw(res.data.options); // 원본 옵션 데이터 저장
@@ -384,7 +384,7 @@ const KioskPage = ({ cartItems, setCartItems }) => {
 
                                         setCartItems(prev => [...prev, newItem]);
 
-                                        axios.post("http://localhost:8080/api/cart/add", newItem)
+                                        api.post(`/cart/add`, newItem)
                                             .then(() => console.log("장바구니 서버 저장 완료"))
                                             .catch(err => console.error("서버 저장 오류:", err));
 

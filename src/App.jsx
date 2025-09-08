@@ -7,8 +7,6 @@ import {SuccessPage} from "./pages/Success.jsx";
 import {FailPage} from "./pages/Fail.jsx";
 import IntroPage from "./pages/IntroPage.jsx";
 
-export const API_SERVER_HOST = 'http://localhost:8080';
-
 function App() {
     const location = useLocation();
 

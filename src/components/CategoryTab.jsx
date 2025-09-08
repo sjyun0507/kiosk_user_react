@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
-import axios from "axios";
+import api from "/src/api/axiosInstance";
 
 const CategoryTab = ({ onCategoryChange }) => {
     const [categories, setCategories] = useState([]);
 
     //카테고리 가져오기
     useEffect(() => {
-        axios.get("http://localhost:8080/api/menus/category")
+        api.get(`/menus/category`)
             .then((res) => {
                 const uniqueCategories = Array.from(
                     new Map(res.data.map((item) => [item.categoryId, {

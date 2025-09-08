@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "/src/api/axiosInstance";
 
 /*
 장바구니 패널
@@ -22,9 +22,9 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
     //장바구니 수량 변경
     const handleQuantityChange = async (id, newQuantity) => {
         if (newQuantity < 1) {
-            const deletedItem = cartItems.find(item => item.id === id);
+            cartItems.find(item => item.id === id);
             setCartItems(prev => prev.filter(item => item.id !== id));
-            await axios.delete(`http://localhost:8080/api/cart/remove/${id}`);
+            await api.delete(`/cart/remove/${id}`);
             return;
         }
 
@@ -32,7 +32,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
         if (!updatedItem) return;
 
         try {
-            const response = await axios.get(`http://localhost:8080/api/menus/${updatedItem.menuId}/stock`);
+            const response = await api.get(`/menus/${updatedItem.menuId}/stock`);
             const currentStock = response.data.stock;
             const sameMenuTotalQuantity = cartItems
                 .filter(item => item.menuId === updatedItem.menuId && item.id !== id)
@@ -50,7 +50,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
                     item.id === id ? { ...item, quantity: newQuantity } : item
                 )
             );
-            await axios.post(`http://localhost:8080/api/cart/update/${id}`, {
+            await api.post(`/cart/update/${id}`, {
                 quantity: newQuantity
             });
 
@@ -214,7 +214,7 @@ const CartPanel = ({ cartItems, setCartItems, setSelectedProduct }) => {
                                 const confirmClear = window.confirm("장바구니를 비우시겠습니까?");
                                 if (!confirmClear) return;
                                 try {
-                                    await axios.delete(`http://localhost:8080/api/cart/${sessionId}`);
+                                    await api.delete(`/cart/${sessionId}`);
                                     setCartItems([]);
                                     alert("장바구니를 비웠습니다.");
                                 } catch (err) {
