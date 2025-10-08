@@ -21,21 +21,22 @@
 
 ## 역할 분담
 
-### 🖥️ Kiosk 부분
+### Kiosk 부분
 
 | 이름 | 담당 역할 |
 |------|------------|
 | **Seojeong Yun** | 풀스택, UI 설계, 결제 기능 연동 |
 | **seolhyeono** | 백엔드, DB 설계, API 개발 |
 
-### 🧾 Admin 부분
+### Admin 부분
 
 | 이름 | 담당 역할 |
 |------|------------|
 | **ParkSeongWon** | 풀스택, UI 설계, 통계관리 |
 | **NamDongHa** | 백엔드, DB 설계 |
 
-관리자 페이지 프로젝트는 GitHub에 별도로 업데이트 하지 않았습니다.
+참고로, 관리자 페이지 프로젝트는 저의 GitHub에 별도로 업데이트 하지 않았습니다.
+➡️ [Go to Admin Page](https://github.com/Seongwonp/kiosk_admin.git)
 
 ---
 
