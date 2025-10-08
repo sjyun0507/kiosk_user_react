@@ -1,7 +1,7 @@
 # Cafe Kiosk
 
 <p>실제 매장 키오스크 사용 경험을 반영하여 구현한 카페 주문/결제 시스템입니다. Spring Boot와 React를 활용한 풀스택 웹 애플리케이션으로, 프론트엔드와 백엔드를 분리하여 API 기반의 통신 구조를 설계하였습니다.
-  키오스크와 관리자는 별도로 분리하여 프로젝트를 만들었고, 해당 프로젝트는 키오스크 프로젝트 입니다. 사용자는 직관적인 UI를 통해 메뉴를 선택하고 옵션을 설정해 주문할 수 있으며, 관리자는 메뉴 관리와 주문 내역, 매출 확인이 가능합니다.
+  키오스크와 관리자는 별도로 분리하여 프로젝트를 만들었고,  **해당 Repo는 키오스크 프론트앤드 프로젝트 입니다.** 사용자는 직관적인 UI를 통해 메뉴를 선택하고 옵션을 설정해 주문할 수 있으며, 관리자는 메뉴 관리와 주문 내역, 매출 확인이 가능합니다.
 </p>
 
 ---
@@ -40,63 +40,79 @@
 - **Deployment***: NeverCloud
 
 ---
-
 ## 주요 기능 화면
 
 ### 초기 화면
+<figure align="center">
+  <img width="1000" alt="초기 화면" src="https://github.com/user-attachments/assets/435f02c8-52c1-4935-89e4-a89415eb4fba" />
+  <figcaption>버튼 클릭 시 메인 키오스크로 진입</figcaption>
+</figure>
 
-- 버튼 클릭 시 메인 화면으로 이동
-<img width="1000"  alt="초기화면_wide" src="https://github.com/user-attachments/assets/435f02c8-52c1-4935-89e4-a89415eb4fba" />
+---
 
 ### 메인 키오스크 화면
 
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <b>메뉴 조회 및 선택</b><br/>
+      <sub>카테고리/메뉴 탐색, 상세 진입</sub><br/><br/>
+      <img alt="키오스크" src="https://github.com/user-attachments/assets/3953ef4f-9607-4c4f-8f5d-971b5c64226d" width="100%"/>
+    </td>
+    <td width="50%" valign="top">
+      <b>옵션 선택 & 장바구니 담기</b><br/>
+      <sub>사이즈/샷추가/얼음량 등 커스터마이징</sub><br/><br/>
+      <img alt="커피 옵션" src="https://github.com/user-attachments/assets/c4def2e6-9d7d-4a3a-ad5e-f7853e03ff6d" width="100%"/>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <b>음료별 옵션 분기</b><br/>
+      <sub>커피 · 버블티 · 스무디 · 에이드별 옵션 동적 노출</sub><br/><br/>
+      <img alt="옵션 분기" src="https://github.com/user-attachments/assets/c6e55d57-7986-4099-a517-829b40eac446" width="100%"/>
+    </td>
+    <td width="50%" valign="top">
+      <b>신메뉴 & 재고 기반 장바구니</b><br/>
+      <sub>관리자 등록 30일 이내 → 신메뉴 배지 / 수량 변경·삭제 / 품절 제한</sub><br/><br/>
+      <img alt="신메뉴/장바구니" src="https://github.com/user-attachments/assets/d95640bc-4a88-484b-ab15-dc4b070b6e12" width="100%"/>
+    </td>
+  </tr>
+</table>
 
-- 메뉴 조회 및 선택
-<img width="550" alt="키오스크" src="https://github.com/user-attachments/assets/3953ef4f-9607-4c4f-8f5d-971b5c64226d" />
-<br />
+<figure>
+  <img alt="타이머" src="https://github.com/user-attachments/assets/ed384d4d-fcd2-4e92-99b0-bc09478b83f8" width="550"/>
+  <figcaption><b>주문 타이머</b> · 2분 내 결제 미진행 시 주문 의사 재확인</figcaption>
+</figure>
 
-- 옵션 선택 및 장바구니 담기
-  
-<img width="550"  alt="커피옵션" src="https://github.com/user-attachments/assets/c4def2e6-9d7d-4a3a-ad5e-f7853e03ff6d" />
-<br />
-
-- 커피, 버블티, 스무디, 에이드 등 음료에 따라 다른 옵션 추가
-  
-<img width="550"  alt="옵션창2" src="https://github.com/user-attachments/assets/c6e55d57-7986-4099-a517-829b40eac446" />
-<br />
-
-- 관리자가 30일이내 등록한 메뉴는 신메뉴로 분류 
-- 장바구니 수량 변경 및 삭제, 재고 기반 주문 제한
-  
-<img width="550"  alt="신메뉴" src="https://github.com/user-attachments/assets/d95640bc-4a88-484b-ab15-dc4b070b6e12" />
-<br />
-
-- 타이머 설정 : 제한 시간 2분 뒤 주문 결제를 하지 않는 경우 주문 유무 확인
-  
-<img width="550"  alt="타이머" src="https://github.com/user-attachments/assets/ed384d4d-fcd2-4e92-99b0-bc09478b83f8" />
-<br />
+---
 
 ### 주문 및 결제
 
-- 휴대폰 번호 입력으로 포인트 적립 및 사용
-  
-<img width="550" alt="포인트" src="https://github.com/user-attachments/assets/b561c492-8a17-405d-b48c-b109d309553a" />
-<br />
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <b>포인트 적립/사용</b><br/>
+      <sub>휴대폰 번호 인증으로 멤버십 적립/차감</sub><br/><br/>
+      <img alt="포인트" src="https://github.com/user-attachments/assets/b561c492-8a17-405d-b48c-b109d309553a" width="100%"/>
+    </td>
+    <td width="50%" valign="top">
+      <b>결제</b><br/>
+      <sub>토스 결제 연동</sub><br/><br/>
+      <img alt="결제" src="https://github.com/user-attachments/assets/ac21b582-1439-4e84-a985-367c4b3b28e6" width="100%"/>
+    </td>
+  </tr>
+</table>
 
-- 결제 기능 (토스 연동)
-  
-<img width="550" alt="결제" src="https://github.com/user-attachments/assets/ac21b582-1439-4e84-a985-367c4b3b28e6" />
-<br />
-
+---
 
 ### 주문 내역 확인
 
-- 결제 성공 화면 : 금액, 주문번호, 주문날짜 확인 후 초기화면으로 이동
-  
-<img width="550"  alt="결제완료 " src="https://github.com/user-attachments/assets/a65d9415-5a39-4d02-a131-3ebb97f5776f" />
+<figure align="center">
+  <img alt="결제 완료" src="https://github.com/user-attachments/assets/a65d9415-5a39-4d02-a131-3ebb97f5776f" width="550"/>
+  <figcaption>결제 성공 · 금액/주문번호/일자 확인 후 초기 화면으로 복귀</figcaption>
+</figure>
 
-
-----
+---
 
 ## 기능 시연
 <p>직관적인 UI와 실제 키오스크 동작을 모방한 커피 주문 웹앱입니다. 반응형 UI 적용으로 다양한 디바이스 대응가능합니다.</p>
