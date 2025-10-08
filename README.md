@@ -48,8 +48,6 @@
   <figcaption>버튼 클릭 시 메인 키오스크로 진입</figcaption>
 </figure>
 
----
-
 ### 메인 키오스크 화면
 
 <table>
@@ -79,13 +77,6 @@
   </tr>
 </table>
 
-<figure>
-  <img alt="타이머" src="https://github.com/user-attachments/assets/ed384d4d-fcd2-4e92-99b0-bc09478b83f8" width="550"/>
-  <figcaption><b>주문 타이머</b> · 2분 내 결제 미진행 시 주문 의사 재확인</figcaption>
-</figure>
-
----
-
 ### 주문 및 결제
 
 <table>
@@ -102,15 +93,6 @@
     </td>
   </tr>
 </table>
-
----
-
-### 주문 내역 확인
-
-<figure align="center">
-  <img alt="결제 완료" src="https://github.com/user-attachments/assets/a65d9415-5a39-4d02-a131-3ebb97f5776f" width="550"/>
-  <figcaption>결제 성공 · 금액/주문번호/일자 확인 후 초기 화면으로 복귀</figcaption>
-</figure>
 
 ---
 
