@@ -35,7 +35,7 @@
 - **Database**: MariaDB
 - **ORM**: JPA 
 - **Tools**: Git, GitHub, Notion, Swagger, Filezilla, Termius
-- **Deployment***: NeverCloud
+- **Deployment**: NeverCloud
 
 ---
 ## 주요 기능 화면
