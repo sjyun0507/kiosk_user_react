@@ -112,3 +112,12 @@
 - 특히 이번 프로젝트를 통해 DB 설계의 중요성을 깊이 체감했으며, 엔티티 간 관계 정의와 테이블 구조가 전체 시스템의 안정성과 유지보수성에 큰 영향을 준다는 점을 배웠습니다.
 
 <br/>
+
+---
+
+## Backend Repository
+<a href="https://github.com/sjyun0507/kiosk_user.git" target="_blank">
+  <img src="https://img.shields.io/badge/-%20Go%20to%20Backend%20Repo-000000?style=for-the-badge&logo=react&logoColor=white" />
+</a>
+
+
