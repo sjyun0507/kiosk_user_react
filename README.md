@@ -26,7 +26,7 @@
 | 이름 | 담당 역할 |
 |------|------------|
 | **Seojeong Yun** | 풀스택, UI 설계, 결제 기능 연동 |
-| **seolhyeono** | 백엔드, DB 설계, API 개발 |
+| **Seolhyeono** | 백엔드, DB 설계, API 개발 |
 
 ### Admin 부분
 
