@@ -36,8 +36,10 @@
 | **NamDongHa** | 백엔드, DB 설계 |
 
 
-🔧 **어드민 GitHub 주소:**  
-➡️ [Go to Admin Page](https://github.com/your-admin-repo-link)
+<a href="https://github.com/sjyun0507/Ticketory.git" target="_blank">
+  <img src="https://img.shields.io/badge/-%20Go%20to%20Admin%20Repo-2E8B57?style=for-the-badge&logo=springboot&logoColor=white" />
+</a>
+
 ---
 
 ## Tech Stack
