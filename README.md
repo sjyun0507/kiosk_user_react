@@ -21,11 +21,23 @@
 
 ## 역할 분담
 
+### 🖥️ Kiosk 부분
+
 | 이름 | 담당 역할 |
 |------|------------|
-| Rachel (Seojeong Yun) | 풀스택, UI 설계, 결제 기능 연동 |
-| seolhyeono | 백엔드, DB 설계, API 개발 |
+| **Seojeong Yun** | 풀스택, UI 설계, 결제 기능 연동 |
+| **seolhyeono** | 백엔드, DB 설계, API 개발 |
 
+### 🧾 Admin 부분
+
+| 이름 | 담당 역할 |
+|------|------------|
+| **ParkSeongWon** | 풀스택, UI 설계, 통계관리 |
+| **NamDongHa** | 백엔드, DB 설계 |
+
+
+🔧 **어드민 GitHub 주소:**  
+➡️ [Go to Admin Page](https://github.com/your-admin-repo-link)
 ---
 
 ## Tech Stack
