@@ -4,11 +4,6 @@
 
 ---
 
-## 데모 (Live Demo)
-👉 [Beans Coffee 바로가기](http://175.45.200.254:8080/)
-
----
-
 ## 프로젝트 개요
 
 - 프로젝트명 : BEANS COFFEE KIOSK
